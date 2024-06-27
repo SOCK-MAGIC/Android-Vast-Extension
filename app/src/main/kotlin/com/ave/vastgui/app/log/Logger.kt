@@ -19,6 +19,7 @@ package com.ave.vastgui.app.log
 import com.ave.vastgui.tools.manager.filemgr.FileMgr
 import com.log.vastgui.core.LogFactory
 import com.log.vastgui.core.base.Logger
+import com.log.vastgui.core.format.OnlyMsgFormat
 import com.log.vastgui.core.getLogFactory
 import com.log.vastgui.core.json.FastJsonConverter
 import com.log.vastgui.core.json.GsonConverter
@@ -48,7 +49,7 @@ val mLogFactory: LogFactory = getLogFactory {
         open = true
     }
     install(LogPrinter) {
-        logger = Logger.mars(logDir, logCache)
+        logger = Logger.mars(logDir, logCache, OnlyMsgFormat)
     }
     install(LogJson) {
         converter = gson
