@@ -29,7 +29,7 @@ package com.log.vastgui.core.base
 interface Logger {
 
     /**
-     * Format [LogFormat] in the style specified by [LogFormat].
+     * Format [LogInfo] in the style specified by [LogFormat].
      *
      * @since 1.3.4
      */
@@ -40,4 +40,22 @@ interface Logger {
     fun log(logInfo: LogInfo)
 
     companion object
+}
+
+/**
+ * Default logger.
+ *
+ * @since 1.3.4
+ */
+fun Logger.Companion.default() = DefaultLogger
+
+/**
+ * Default logger.
+ *
+ * @since 1.3.4
+ */
+object DefaultLogger : Logger {
+    override fun log(logInfo: LogInfo) {
+        println(logInfo.toString())
+    }
 }

@@ -14,30 +14,24 @@
  * limitations under the License.
  */
 
-package com.log.vastgui.core.base
+package com.log.vastgui.core.format
+
+import com.log.vastgui.core.base.LogFormat
+import com.log.vastgui.core.base.LogInfo
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
-// Date: 2024/5/13 23:34
-// Documentation: https://ave.entropy2020.cn/documents/log/log-core/description/
+// Date: 2024/6/27
+// Documentation: https://ave.entropy2020.cn/documents/log/log-core/format/
 
 /**
- * Log store.
+ * If you just want to print the log content without additional
+ * information, you can use [OnlyMsgFormat].
  *
- * @since 1.3.1
+ * @see <img
+ *     src="https://github.com/SakurajimaMaii/Android-Vast-Extension/blob/develop/libraries/log/core/image/only_msg_format.png?raw=true"/>
+ * @since 1.3.4
  */
-interface LogStore {
-
-    /**
-     * Format [LogInfo] in the style specified by [LogFormat].
-     *
-     * @since 1.3.4
-     */
-    val logFormat: LogFormat
-        get() = TODO("Please override logFormat!")
-
-    /** @since 1.3.1 */
-    fun store(logInfo: LogInfo)
-
-    companion object
+object OnlyMsgFormat : LogFormat {
+    override fun format(logInfo: LogInfo) = logInfo.mContent
 }

@@ -16,13 +16,20 @@
 
 package com.log.vastgui.core.plugin
 
-import com.log.vastgui.core.LogPipeline
 import com.log.vastgui.core.LogCat
+import com.log.vastgui.core.LogPipeline
 import com.log.vastgui.core.base.LogInfo
 import com.log.vastgui.core.base.LogLevel
+import com.log.vastgui.core.base.LogLevel.ASSERT
+import com.log.vastgui.core.base.LogLevel.DEBUG
+import com.log.vastgui.core.base.LogLevel.ERROR
+import com.log.vastgui.core.base.LogLevel.INFO
+import com.log.vastgui.core.base.LogLevel.VERBOSE
+import com.log.vastgui.core.base.LogLevel.WARN
 import com.log.vastgui.core.base.LogPlugin
 import com.log.vastgui.core.base.Logger
-import kotlin.properties.Delegates
+import com.log.vastgui.core.base.allLogLevel
+import com.log.vastgui.core.base.default
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -38,20 +45,31 @@ import kotlin.properties.Delegates
 class LogPrinter private constructor(private val mConfiguration: Configuration) {
 
     /**
+     * Used to determine whether logs of this level are allowed to be printed.
+     *
+     * @since 1.3.4
+     */
+    private val levelMap: MutableMap<LogLevel, Boolean> = mutableMapOf(
+        VERBOSE to false, DEBUG to false, INFO to false,
+        WARN to false, ERROR to false, ASSERT to false
+    )
+
+    /**
      * [LogPrinter] configuration.
      *
      * @property level Minimum priority of the log.
+     * @property levelSet Log levels allowed to be printed.
      * @property logger Log printing implementation.
      * @since 1.3.1
      */
     class Configuration internal constructor() {
-        var level: LogLevel = LogLevel.VERBOSE
+        @Deprecated(message = "Use levelList instead.", level = DeprecationLevel.WARNING)
+        var level: LogLevel = VERBOSE
 
-        var logger: Logger by Delegates.notNull()
+        var levelSet: Set<LogLevel> = emptySet()
+
+        var logger: Logger = Logger.default()
     }
-
-    /** @since 1.3.1 */
-    private val mLevel: LogLevel = mConfiguration.level
 
     /** @since 1.3.1 */
     private val mLogger: Logger = mConfiguration.logger
@@ -62,8 +80,20 @@ class LogPrinter private constructor(private val mConfiguration: Configuration) 
      * @since 1.3.1
      */
     internal fun printLog(logInfo: LogInfo) {
-        if (logInfo.mLevel >= mLevel) {
-            mLogger.log(logInfo)
+        mLogger.log(logInfo)
+    }
+
+    init {
+        // Use level
+        if (mConfiguration.levelSet.isEmpty()) {
+            allLogLevel.filter { level -> level >= mConfiguration.level }
+                .forEach { levelMap[it] = true }
+        }
+        // Use levelList
+        else {
+            mConfiguration.levelSet.forEach {
+                levelMap[it] = true
+            }
         }
     }
 
@@ -76,6 +106,11 @@ class LogPrinter private constructor(private val mConfiguration: Configuration) 
         }
 
         override fun install(plugin: LogPrinter, scope: LogCat) {
+            scope.logPipeline.intercept(LogPipeline.State) {
+                if (plugin.levelMap[subject.level] == false) {
+                    finish()
+                }
+            }
             scope.logPipeline.intercept(LogPipeline.Output) {
                 val logInfo = subject.build()
                 plugin.printLog(logInfo)

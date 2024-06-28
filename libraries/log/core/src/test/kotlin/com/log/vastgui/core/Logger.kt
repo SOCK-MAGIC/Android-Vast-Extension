@@ -16,10 +16,9 @@
 
 package com.log.vastgui.core
 
-import com.log.vastgui.core.base.LogFormat
-import com.log.vastgui.core.base.LogInfo
-import com.log.vastgui.core.base.Logger
-import com.log.vastgui.core.format.TableFormat
+import com.log.vastgui.core.base.LogLevel
+import com.log.vastgui.core.base.allLogLevel
+import com.log.vastgui.core.format.OnlyMsgFormat
 import com.log.vastgui.core.json.GsonConverter
 import com.log.vastgui.core.plugin.LogJson
 import com.log.vastgui.core.plugin.LogPretty
@@ -29,7 +28,7 @@ import com.log.vastgui.core.plugin.LogSwitch
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
 // Date: 2023/7/5
-// Documentation: https://ave.entropy2020.cn/documents/VastTools/log/description/
+// Documentation: https://ave.entropy2020.cn/documents/log/log-core/setting-up-logfactory/
 
 private val gson = GsonConverter.getInstance(true)
 
@@ -38,23 +37,31 @@ val mLogFactory: LogFactory = getLogFactory {
         open = true
     }
     install(LogPrinter) {
-        logger = object : Logger {
-            override val logFormat: LogFormat
-                get() = TableFormat(
-                    1000,
-                    Int.MAX_VALUE,
-                    TableFormat.LogHeader.default
-                )
-
-            override fun log(logInfo: LogInfo) {
-                println(logFormat.format(logInfo))
-            }
-        }
+        levelSet = allLogLevel
+        logger = SimpleLogger(OnlyMsgFormat)
     }
-    install(LogJson){
+    install(LogJson) {
         converter = gson
     }
-    install(LogPretty){
+    install(LogPretty) {
         converter = gson
     }
+    install(SysPlugin)
 }
+
+//    install(LogPrinter) {
+//        logger = object : Logger {
+//            override val logFormat: LogFormat
+//                get() = OnlyMsgFormat
+//
+//            override fun log(logInfo: LogInfo) {
+//                println(logFormat.format(logInfo))
+//            }
+//        }
+//    }
+//    install(LogJson){
+//        converter = gson
+//    }
+//    install(LogPretty){
+//        converter = gson
+//    }

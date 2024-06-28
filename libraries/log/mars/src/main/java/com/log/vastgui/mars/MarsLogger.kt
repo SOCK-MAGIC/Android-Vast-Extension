@@ -31,9 +31,7 @@ import java.io.File
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
 // Date: 2024/6/1 0:12
-// Description: 
-// Documentation:
-// Reference:
+// Documentation: https://ave.entropy2020.cn/documents/log/log-mars/usage/
 
 /**
  * Mars Logger.
@@ -42,27 +40,25 @@ import java.io.File
  * @since 1.3.4
  */
 fun Logger.Companion.mars(
-    logdir: File,
-    cache: File,
-    open: Boolean = true,
+    logDir: File,
+    logCache: File,
     logFormat: LogFormat = TableFormat(
         DEFAULT_MAX_SINGLE_LOG_LENGTH,
         DEFAULT_MAX_PRINT_TIMES,
         TableFormat.LogHeader.default
     ),
     mode: MarsWriteMode = MarsConfig.mode,
-    namePreFix: String = MarsConfig.namePreFix,
+    namePreFix: String = MarsConfig.namePrefix,
     singleLogFileEveryday: Boolean = MarsConfig.singleLogFileEveryday,
     singleLogFileMaxSize: Long = MarsConfig.singleLogFileMaxSize,
     singleLogFileStoreTime: Long = MarsConfig.singleLogFileStoreTime,
     singleLogFileCacheDays: Int = MarsConfig.singleLogFileCacheDays,
     pubKey: String = MarsConfig.pubKey
 ) = MarsConfig.let {
-    it.isConsoleLogOpen = open
     it.mode = mode
-    it.logdir = logdir
-    it.cache = cache
-    it.namePreFix = namePreFix
+    it.logDir = logDir
+    it.logCache = logCache
+    it.namePrefix = namePreFix
     it.singleLogFileEveryday = singleLogFileEveryday
     it.singleLogFileMaxSize = singleLogFileMaxSize
     it.singleLogFileStoreTime = singleLogFileStoreTime
@@ -77,16 +73,17 @@ fun Logger.Companion.mars(
  *
  * @since 1.3.4
  */
-class MarsLogger internal constructor(override val logFormat: LogFormat) : Logger {
-    override fun log(info: LogInfo) {
-        val content = logFormat.format(info)
-        when (info.mLevel) {
-            LogLevel.VERBOSE -> Log.v(info.mTag, content)
-            LogLevel.DEBUG -> Log.d(info.mTag, content)
-            LogLevel.INFO -> Log.i(info.mTag, content)
-            LogLevel.WARN -> Log.w(info.mTag, content)
-            LogLevel.ERROR -> Log.e(info.mTag, content)
-            LogLevel.ASSERT -> Log.f(info.mTag, content)
+class MarsLogger internal constructor(override val logFormat: LogFormat) :
+    Logger {
+    override fun log(logInfo: LogInfo) {
+        val content = logFormat.format(logInfo)
+        when (logInfo.mLevel) {
+            LogLevel.VERBOSE -> Log.v(logInfo.mTag, logInfo, content)
+            LogLevel.DEBUG -> Log.d(logInfo.mTag, logInfo, content)
+            LogLevel.INFO -> Log.i(logInfo.mTag, logInfo, content)
+            LogLevel.WARN -> Log.w(logInfo.mTag, logInfo, content)
+            LogLevel.ERROR -> Log.e(logInfo.mTag, logInfo, content)
+            LogLevel.ASSERT -> Log.f(logInfo.mTag, logInfo, content)
         }
     }
 

@@ -29,9 +29,7 @@ import com.log.vastgui.core.base.needCut
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
 // Date: 2024/6/20 22:41
-// Description: 
-// Documentation:
-// Reference:
+// Documentation: https://ave.entropy2020.cn/documents/log/log-core/format/
 
 /**
  * Default maximum length of chars printed of a single log.
@@ -54,7 +52,7 @@ const val DEFAULT_MAX_PRINT_TIMES = Int.MAX_VALUE
  * Table format of [LogInfo].
  *
  * @see <img
- *     src="https://github.com/SakurajimaMaii/Android-Vast-Extension/blob/develop/libraries/tools/image/log.png?raw=true">
+ *     src="https://github.com/SakurajimaMaii/Android-Vast-Extension/blob/develop/libraries/log/core/image/table_format.png?raw=true">
  * @since 1.3.4
  */
 class TableFormat(
