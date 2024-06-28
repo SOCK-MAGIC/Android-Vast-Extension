@@ -19,7 +19,6 @@ package com.ave.vastgui.app.log
 import com.ave.vastgui.tools.log.android
 import com.ave.vastgui.tools.manager.filemgr.FileMgr
 import com.log.vastgui.core.LogFactory
-import com.log.vastgui.core.base.LogLevel
 import com.log.vastgui.core.base.LogStore
 import com.log.vastgui.core.base.Logger
 import com.log.vastgui.core.format.OnlyMsgFormat
@@ -70,7 +69,7 @@ val mLogFactory2: LogFactory = getLogFactory {
         open = false
     }
     install(LogPrinter) {
-        logger = Logger.android()
+        logger = Logger.android(logFormat = OnlyMsgFormat)
     }
     install(LogJson) {
         converter = gson
